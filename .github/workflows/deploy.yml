@@ -13,8 +13,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -26,6 +27,8 @@ jobs:
         run: |
           if [ -f package.json ]; then
             npm ci
+          else
+            echo "No package.json found — skipping npm install"
           fi
 
       - name: Build or copy files
@@ -34,18 +37,18 @@ jobs:
           mkdir dist
 
           if [ -f package.json ]; then
-            echo "🔧 Running npm build..."
+            echo "Running npm build..."
             npm run build
           else
-            echo "📁 Static site detected. Copying files..."
+            echo "Static site — copying files"
             rsync -av --exclude=dist --exclude=.git --exclude=.github ./ dist/
           fi
 
-          echo "🚀 Final dist contents:"
-          ls -al dist
+          echo "Creating .nojekyll"
+          touch dist/.nojekyll
 
-      - name: Disable Jekyll
-        run: touch dist/.nojekyll
+          echo "Dist contents:"
+          ls -R dist
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -55,9 +58,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
