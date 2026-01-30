@@ -13,16 +13,13 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-<<<<<<< HEAD
-      # 1. Checkout full repository
-=======
       # 1. Checkout repository
->>>>>>> master
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # ensures full history for any relative imports
+          fetch-depth: 0
 
       # 2. Setup Node.js
       - name: Setup Node.js
@@ -30,76 +27,19 @@ jobs:
         with:
           node-version: 20
 
-<<<<<<< HEAD
-      # 3. Clean workspace
-      - name: Clean workspace
-        run: |
-          rm -rf dist node_modules
-          npm cache clean --force
-
-      # 4. Install dependencies if package.json exists
-=======
-      # 3. Install dependencies if package.json exists
->>>>>>> master
+      # 3. Install dependencies
       - name: Install dependencies
-        run: |
-          if [ -f package.json ]; then
-            echo "package.json found → Installing dependencies"
-            npm ci
-          else
-            echo "No package.json found → Skipping npm install"
-          fi
+        run: npm ci
 
-<<<<<<< HEAD
-      # 5. Build site or copy static files
-      - name: Build site or copy static files
-        run: |
-          # Clean previous dist
-=======
-      # 4. Build site or copy static files
-      - name: Build site or copy static files
-        run: |
-          # Clean previous output
->>>>>>> master
-          rm -rf dist
-          mkdir dist
+      # 4. Build Astro site
+      - name: Build site
+        run: npm run build
 
-          if [ -f package.json ]; then
-<<<<<<< HEAD
-            echo "Detected package.json → Running Astro build"
-            npm run build -- --no-cache
-          else
-            echo "Static site detected → Copying files"
-=======
-            echo "Detected package.json → Running build"
-            npm run build
-          else
-            echo "Static site detected → Copying files"
-            # Copy everything except dist/, .git/, .github/
->>>>>>> master
-            find . -maxdepth 1 \
-              ! -name "dist" \
-              ! -name ".git" \
-              ! -name ".github" \
-              ! -name "." \
-              -exec cp -R {} dist/ \;
-          fi
+      # 5. Disable Jekyll
+      - name: Disable Jekyll
+        run: touch dist/.nojekyll
 
-<<<<<<< HEAD
-          # Add .nojekyll to prevent GitHub Pages from running Jekyll
-=======
-          # Add .nojekyll to prevent Jekyll processing
->>>>>>> master
-          touch dist/.nojekyll
-
-          echo "Dist directory contents:"
-          ls -al dist
-
-<<<<<<< HEAD
-      # 6. Upload artifact for GitHub Pages
-=======
-      # 5. Upload artifact for Pages
->>>>>>> master
+      # 6. Upload Pages artifact
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -108,15 +48,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+
     environment:
       name: github-pages
 
     steps:
-<<<<<<< HEAD
       # 7. Deploy to GitHub Pages
-=======
-      # 6. Deploy to GitHub Pages
->>>>>>> master
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
