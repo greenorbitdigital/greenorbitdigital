@@ -14,7 +14,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+<<<<<<< HEAD
       # 1. Checkout full repository
+=======
+      # 1. Checkout repository
+>>>>>>> master
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -26,6 +30,7 @@ jobs:
         with:
           node-version: 20
 
+<<<<<<< HEAD
       # 3. Clean workspace
       - name: Clean workspace
         run: |
@@ -33,6 +38,9 @@ jobs:
           npm cache clean --force
 
       # 4. Install dependencies if package.json exists
+=======
+      # 3. Install dependencies if package.json exists
+>>>>>>> master
       - name: Install dependencies
         run: |
           if [ -f package.json ]; then
@@ -42,18 +50,33 @@ jobs:
             echo "No package.json found → Skipping npm install"
           fi
 
+<<<<<<< HEAD
       # 5. Build site or copy static files
       - name: Build site or copy static files
         run: |
           # Clean previous dist
+=======
+      # 4. Build site or copy static files
+      - name: Build site or copy static files
+        run: |
+          # Clean previous output
+>>>>>>> master
           rm -rf dist
           mkdir dist
 
           if [ -f package.json ]; then
+<<<<<<< HEAD
             echo "Detected package.json → Running Astro build"
             npm run build -- --no-cache
           else
             echo "Static site detected → Copying files"
+=======
+            echo "Detected package.json → Running build"
+            npm run build
+          else
+            echo "Static site detected → Copying files"
+            # Copy everything except dist/, .git/, .github/
+>>>>>>> master
             find . -maxdepth 1 \
               ! -name "dist" \
               ! -name ".git" \
@@ -62,13 +85,21 @@ jobs:
               -exec cp -R {} dist/ \;
           fi
 
+<<<<<<< HEAD
           # Add .nojekyll to prevent GitHub Pages from running Jekyll
+=======
+          # Add .nojekyll to prevent Jekyll processing
+>>>>>>> master
           touch dist/.nojekyll
 
           echo "Dist directory contents:"
           ls -al dist
 
+<<<<<<< HEAD
       # 6. Upload artifact for GitHub Pages
+=======
+      # 5. Upload artifact for Pages
+>>>>>>> master
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -81,7 +112,11 @@ jobs:
       name: github-pages
 
     steps:
+<<<<<<< HEAD
       # 7. Deploy to GitHub Pages
+=======
+      # 6. Deploy to GitHub Pages
+>>>>>>> master
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
